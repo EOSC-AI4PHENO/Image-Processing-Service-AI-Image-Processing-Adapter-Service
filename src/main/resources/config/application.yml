@@ -1,0 +1,44 @@
+app:
+  fast-api: http://10.0.20.50:8888
+  fast-api-temp: http://10.0.20.50:8888
+
+
+
+
+server:
+  port: 6702
+  error:
+    include-message: always
+
+logging:
+  level:
+    ROOT: INFO
+    com:
+      siseth:
+        AIProcessing: DEBUG
+    org:
+      hibernate:
+        SQL: INFO
+  file:
+    name: logs/AIProcessing.log
+
+springdoc:
+  api-docs:
+    path: /api/image-processing/ai-adapter/v3/api-docs
+
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+spring:
+  application:
+    name: ai-image-processing-service
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Europe/Warsaw

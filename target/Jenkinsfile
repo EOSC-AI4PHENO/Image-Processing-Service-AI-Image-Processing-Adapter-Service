@@ -1,0 +1,68 @@
+pipeline {
+    agent {
+        node {
+            label 'docker-slave-gradle_6.9'
+            customWorkspace "/home/jenkins/jobs/Seth-Software-Image-Processing-Service/AI-Image-Processing-Adapter-Service-pipeline/workspace"
+        }
+    }
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                git(credentialsId: 'github-api-key', url: "https://github.com/Seth-Software-Image-Processing-Service/AI-Image-Processing-Adapter-Service")
+            }
+        }
+
+        stage('Increase Execute Permissions') {
+            steps {
+                sh 'chmod +x /home/jenkins/jobs/Seth-Software-Image-Processing-Service/AI-Image-Processing-Adapter-Service-pipeline/workspace/gradlew'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                node {
+                    label 'docker-slave-gradle_6.9'
+                    customWorkspace "/home/jenkins/jobs/Seth-Software-Image-Processing-Service/AI-Image-Processing-Adapter-Service-pipeline/workspace"
+                    withGradle {
+                        sh './gradlew build'
+                    }
+                }
+            }
+        }
+
+    //     stage('Copy Jar') {
+    //         steps {
+    //             sh '''find /home/jenkins/jobs/${JOB_NAME}/workspace/build/libs/ -regex '.*\\-SNAPSHOT.jar' -exec cp {} /home/jenkins/jobs/${JOB_NAME}/workspace/target \\;'''
+    //         }
+    //     }
+
+    //     stage('Deploy Docker Image') {
+    //         steps {
+    //             // Dodaj etap wdrażania obrazu Docker, na przykład: sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+    //         }
+    //     }
+
+    //     stage('Send Files Over SSH') {
+    //         steps {
+    //             // Dodaj etap wysyłania plików lub wykonywania poleceń za pomocą SSH
+    //         }
+    //     }
+    // }
+    // post {
+    //     always {
+    //         echo 'No converter for Publisher: org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter'
+    //     }
+    // }
+    // options {
+    //     buildDiscarder(logRotator(numToKeepStr: '5'))
+    // }
+    // parameters {
+    //     choice(name: 'branch', choices: ['develop', 'test', 'main'], description: null)
+    //     choice(name: 'SERVICE_NAME', choices: ['AI-Image-Processing-Adapter-Service'], description: null)
+    //     choice(name: 'IMAGE_NAME', choices: ['ai-image-processing-adapter-service'], description: null)
+    //     string(name: 'IMAGE_TAG', defaultValue: 'latest', description: null)
+    // }
+    // triggers {
+    //     pollSCM('H/5 * * * *')
+    }
+}
